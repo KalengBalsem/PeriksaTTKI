@@ -1,9 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./static/index.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'index.css' %}">
     <title>PeriksaTTKI</title>
 </head>
 <body>
@@ -13,7 +15,7 @@
         <div class="center">
             <div class="logotext-col">
                 <div>
-                    <img class="logo" src="./static/images/logo.png" width="65">
+                    <img class="logo" src="{% static 'images/logo.png' %}" width="65">
                 </div>
                 <div>
                     <h1 class="appname">Periksa <span id="typewriter"></span><span id="cursor">_</span></h1>
