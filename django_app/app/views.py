@@ -1,14 +1,27 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 
 from django.contrib import auth
 from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    # i might need to change this part (hardcoded)
+    if request.user.is_authenticated:
+        return redirect('main')
+    else:
+        return render(request, 'index.html')
+    ####
 
 def main(request):
-    return render(request, 'main.html')
+    if request.method == 'POST':
+        user_input = request.POST.get('user_input')
+        response = 'hi this is my response'
+        return JsonResponse({'user_input': user_input, 'response': response})
+    elif request.user.is_authenticated:
+        return render(request, 'main.html')
+    else:
+        return redirect('index')
 
 def login(request):
     if request.method == 'POST':
@@ -47,4 +60,4 @@ def register(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('login')
+    return redirect('index')
