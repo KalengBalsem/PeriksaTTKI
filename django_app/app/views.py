@@ -23,7 +23,7 @@ def main(request):
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
         if getattr(request, 'limited', False):
-            return JsonResponse({'response': '<p>Too Many Requests (max=5/minute).</p>'})
+            return JsonResponse({'typo_words': 'Too Many Requests (max=5/minute).', 'paraphrase': 'Too Many Requests (max=5/minute).'})
         response = call_model(user_input)
         typo_words = response['typo_words']
         paraphrase = response['paraphrase']
