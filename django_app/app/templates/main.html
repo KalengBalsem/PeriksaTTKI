@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'main.css' %}">
+    <title>PeriksaTTKI-Main</title>
+</head>
+<body>
+    <header>
+        <div>
+            <img class="logo" src="{% static 'images/logo.png' %}" width="30">
+        </div>
+        <div>
+            <h3 class="appname">Periksa TTKI_ (Beta)</h3>
+        </div>
+        <div class="logout">
+            <a href="logout"><button class="button">Keluar</button></a>
+        </div>
+    </header>
+
+    <main>
+        <!-- USER INPUT -->
+        <div class="wrapper-wrapper">
+            <div class="wrapper">
+                <form class="input_form">
+                    {% csrf_token %}
+                    <textarea class='input' name="input" maxlength='400' placeholder="Masukkan teks di sini" wrap='hard'></textarea>
+                    <button type="submit"><span>></span></button>
+                </form>
+            </div>
+        </div>
+        <!-- RESPONSE -->
+        <div class="response">
+        <div>
+
+    </main>
+
+    <footer>
+    </footer>
+
+<script>
+    const user_input = document.querySelector('.input');
+    const response_block = document.querySelector('.response');
+    const input_form = document.querySelector('.input_form');
+    
+
+    // to send message when user presses enter
+    {% comment %} user_input.addEventListener("keypress", function(event) {
+        // If the user presses the "Enter" key on the keyboard
+        if (event.key === "Enter") {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          // Trigger the button element with a click
+          document.querySelector(".button").click();
+        }
+      }); {% endcomment %}
+
+
+    // SOME EPIC SHITs GOING ON HERE (send user_input and show response in the page)
+    input_form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const input = user_input.value.trim();
+        if (input.length === 0) {
+            return;
+        }
+
+        response_block.innerHTML = '';  // reset the response block
+        
+        // creating LOADING div (the algo can be optimized)
+        const loader = document.createElement('p');
+        loader.classList.add("loader");
+        response_block.appendChild(loader);
+
+        // RECEIVING DYNAMIC DATA FROM DJANGO
+        fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'user_input': input
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            // accepting and assigning responses
+            const typo_words = data.typo_words;
+            const paraphrase = data.paraphrase;
+            const typoParagraph = document.createElement('p');
+            const paraphraseParagraph = document.createElement('p');
+            typoParagraph.innerHTML = typo_words;
+            paraphraseParagraph.innerHTML = paraphrase;
+
+            // create response subheadings 
+            const typoSubheading = document.createElement('p');
+            const paraphraseSubheading = document.createElement('p');
+            typoSubheading.classList.add('sub_heading')
+            paraphraseSubheading.classList.add('sub_heading')
+            typoSubheading.textContent = `Typo`;
+            paraphraseSubheading.textContent = `Parafrase`;
+
+            // remove LOADING
+            loader.classList.remove("loader");
+            // append subheadings and responses
+            response_block.appendChild(typoSubheading);
+            response_block.appendChild(typoParagraph);
+            response_block.appendChild(paraphraseSubheading);
+            response_block.appendChild(paraphraseParagraph);
+          });
+
+    });
+
+</script>
+
+
+</body>
+</html>
