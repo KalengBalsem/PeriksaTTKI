@@ -3,6 +3,11 @@ from django.http import JsonResponse
 
 from django.contrib import auth
 from django.contrib.auth.models import User
+from django_ratelimit.decorators import ratelimit
+
+# inferencing the model
+from .model_inference import call_model
+####
 
 # Create your views here.
 def index(request):
@@ -13,11 +18,16 @@ def index(request):
         return render(request, 'index.html')
     ####
 
+@ratelimit(key='user_or_ip', rate='5/m', method=['POST'], block=False)
 def main(request):
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
-        response = 'hi this is my response'
-        return JsonResponse({'user_input': user_input, 'response': response})
+        if getattr(request, 'limited', False):
+            return JsonResponse({'response': '<p>Too Many Requests (max=5/minute).</p>'})
+        response = call_model(user_input)
+        typo_words = response['typo_words']
+        paraphrase = response['paraphrase']
+        return JsonResponse({'user_input': user_input, 'typo_words': typo_words, 'paraphrase': paraphrase})
     elif request.user.is_authenticated:
         return render(request, 'main.html')
     else:

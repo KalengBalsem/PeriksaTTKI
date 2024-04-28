@@ -19,6 +19,11 @@ header {
     align-items: center;
 }
 
+footer {
+    padding: 1rem;
+    margin: 3rem;
+}
+
 
 /* =============== STYLING =============== */
 .logo {
@@ -44,7 +49,6 @@ header {
     background-color: white;
     border: 2px solid #292929;
     border-radius: 3px;
-    transition-duration: 0.4s;
     cursor: pointer;
 }
 
@@ -56,29 +60,29 @@ header {
 
 
 /* =============== USER INPUT =============== */
-.wrapper {
+.wrapper-wrapper {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+}
 
-    margin: 10px 30px;
-    padding: 10px;
-    width: 95vw;
-
+.wrapper {
+    padding: 20px;
+    width: 80vw;
+    position: relative;
+    
     border: 0px;
     border-radius: 10px;
-
+    
     background-color: #F2F2F2;
 }
 
 .input {
-    margin: 20px 10px 20px 20px;
-    padding: 10px;
     height: 20vh;
-    width: 90vw;   
+    width: 100%;
 
     background-color: #F2F2F2;
     border: 0px;
-    border-radius: 10px;
     outline: none;
     
     resize: none;
@@ -100,3 +104,51 @@ header {
     border: 2px solid #292929;
     border-radius: 20%;
 }
+
+/* =============== SYSTEM RESPONSE =============== */
+.response > p {
+    font-family: sans-serif;
+    margin: 10px 10%;
+}
+
+.response > p:first-child {
+    margin-top: 40px;
+}
+
+.sub_heading {
+    font-size: larger;
+    font-weight: bold;
+}
+
+span.wrong {
+    background-color: lightcoral;
+}
+
+span.correct {
+    background-color: lightgreen;
+}
+
+@media (min-width: 300px) {
+
+}
+
+/* =============== LOADING ANIMATION =============== */
+.loader {
+    width: 35px;
+    height: 35px;
+    border: 4px solid black;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    }
+  
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 

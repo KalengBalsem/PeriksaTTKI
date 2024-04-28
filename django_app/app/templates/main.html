@@ -23,18 +23,23 @@
 
     <main>
         <!-- USER INPUT -->
-        <div class="wrapper">
-            <form class="input_form">
-                {% csrf_token %}
-                <textarea class='input' name="input" placeholder="Masukkan teks di sini" wrap='hard'></textarea>
-                <button type="submit"><span>></span></button>
-            </form>
+        <div class="wrapper-wrapper">
+            <div class="wrapper">
+                <form class="input_form">
+                    {% csrf_token %}
+                    <textarea class='input' name="input" maxlength='400' placeholder="Masukkan teks di sini" wrap='hard'></textarea>
+                    <button type="submit"><span>></span></button>
+                </form>
+            </div>
         </div>
         <!-- RESPONSE -->
         <div class="response">
         <div>
 
     </main>
+
+    <footer>
+    </footer>
 
 <script>
     const user_input = document.querySelector('.input');
@@ -63,9 +68,14 @@
             return;
         }
 
-        response_block.value = '';
-        user_input.value = '';
+        response_block.innerHTML = '';  // reset the response block
+        
+        // creating LOADING div (the algo can be optimized)
+        const loader = document.createElement('p');
+        loader.classList.add("loader");
+        response_block.appendChild(loader);
 
+        // RECEIVING DYNAMIC DATA FROM DJANGO
         fetch('', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -76,10 +86,29 @@
           })
           .then(response => response.json())
           .then(data => {
-            const response = data.response;
-            let response_p = document.createElement('p');
-            response_p.innerHTML = `${response}`;
-            response_block.appendChild(response_p);
+            // accepting and assigning responses
+            const typo_words = data.typo_words;
+            const paraphrase = data.paraphrase;
+            const typoParagraph = document.createElement('p');
+            const paraphraseParagraph = document.createElement('p');
+            typoParagraph.innerHTML = typo_words;
+            paraphraseParagraph.innerHTML = paraphrase;
+
+            // create response subheadings 
+            const typoSubheading = document.createElement('p');
+            const paraphraseSubheading = document.createElement('p');
+            typoSubheading.classList.add('sub_heading')
+            paraphraseSubheading.classList.add('sub_heading')
+            typoSubheading.textContent = `Typo`;
+            paraphraseSubheading.textContent = `Parafrase`;
+
+            // remove LOADING
+            loader.classList.remove("loader");
+            // append subheadings and responses
+            response_block.appendChild(typoSubheading);
+            response_block.appendChild(typoParagraph);
+            response_block.appendChild(paraphraseSubheading);
+            response_block.appendChild(paraphraseParagraph);
           });
 
     });
