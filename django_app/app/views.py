@@ -4,6 +4,9 @@ from django.http import JsonResponse
 from django.contrib import auth
 from django.contrib.auth.models import User
 from django_ratelimit.decorators import ratelimit
+from .models import Chat
+
+from django.utils import timezone
 
 # inferencing the model
 from .model_inference import call_model
@@ -27,6 +30,12 @@ def main(request):
         response = call_model(user_input)
         typo_words = response['typo_words']
         paraphrase = response['paraphrase']
+
+        # saving user_input and response to the database
+        chat = Chat(user=request.user, message=user_input, response=response, timestamp=timezone.now)
+        chat.save()
+        ####
+        
         return JsonResponse({'user_input': user_input, 'typo_words': typo_words, 'paraphrase': paraphrase})
     elif request.user.is_authenticated:
         return render(request, 'main.html')
