@@ -25,18 +25,8 @@ def index(request):
 def main(request):
     if request.method == 'POST':
         user_input = request.POST.get('user_input')
-        if getattr(request, 'limited', False):
-            return JsonResponse({'typo_words': 'Too Many Requests (max=5/minute).', 'paraphrase': 'Too Many Requests (max=5/minute).'})
-        response = call_model(user_input)
-        typo_words = response['typo_words']
-        paraphrase = response['paraphrase']
-
-        # saving user_input and response to the database
-        chat = Chat(user=request.user, message=user_input, response=response, timestamp=timezone.now)
-        chat.save()
-        ####
-        
-        return JsonResponse({'user_input': user_input, 'typo_words': typo_words, 'paraphrase': paraphrase})
+        response = 'hi this is my response'
+        return JsonResponse({'user_input': user_input, 'response': response})
     elif request.user.is_authenticated:
         return render(request, 'main.html')
     else:
