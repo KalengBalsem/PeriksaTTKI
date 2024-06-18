@@ -186,7 +186,7 @@ div.suggestion button {
     overflow: hidden;
 }
 
-div.suggestion button.submit {
+div.suggestion button.submit_correction {
     display: inline;
     width: 20px ; 
 }
