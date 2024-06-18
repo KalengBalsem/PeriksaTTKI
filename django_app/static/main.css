@@ -105,34 +105,7 @@ footer {
     border-radius: 20%;
 }
 
-/* =============== SYSTEM RESPONSE =============== */
-.response > p {
-    font-family: sans-serif;
-    margin: 10px 10%;
-}
-
-.response > p:first-child {
-    margin-top: 40px;
-}
-
-.sub_heading {
-    font-size: larger;
-    font-weight: bold;
-}
-
-span.wrong {
-    background-color: lightcoral;
-}
-
-span.correct {
-    background-color: lightgreen;
-}
-
-@media (min-width: 300px) {
-
-}
-
-/* =============== LOADING ANIMATION =============== */
+/* =============== LOADER =============== */
 .loader {
     width: 35px;
     height: 35px;
@@ -152,3 +125,85 @@ span.correct {
         transform: rotate(360deg);
     }
     } 
+
+/* =============== SYSTEM RESPONSE =============== */
+.response > p {
+    font-family: sans-serif;
+    margin: 10px 10%;
+}
+
+.response > p:first-child {
+    margin-top: 40px;
+}
+
+.sub_heading {
+    font-size: larger;
+    font-weight: bold;
+}
+
+.response > p > button {
+    font-size: medium; /* to prevent the font inside button gets smaller*/
+    border: 0;
+    cursor: pointer;
+}
+
+button.wrong {
+    background-color: lightcoral;
+}
+
+button.correct {
+    background-color: lightgreen;
+}
+
+/* correction suggestions */
+div.suggestion {
+    width: 150px;
+    margin: 10px;
+    padding: 10px;
+
+    font-family: sans-serif;
+    font-size: smaller;
+    
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+div.suggestion.hidden {
+    visibility: hidden;
+}
+
+div.suggestion button {
+    display: block;
+    padding: 0px 5px;
+    max-width: 140px;
+
+    text-align: left;
+
+    /* word length limit (will only work if there's max width) */ 
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+div.suggestion button.submit {
+    display: inline;
+    width: 20px ; 
+}
+
+div.suggestion button.close {
+    width: 20px ;
+}
+
+div.suggestion input {
+    width: 120px;
+}
+
+:popover-open {
+    position: absolute; /* so that the position isn't fixed */
+}
+
+/* =============== DEVICE ADJUSTMENTS =============== */
+@media (min-width: 300px) {
+
+}

@@ -28,13 +28,31 @@
                 <form class="input_form">
                     {% csrf_token %}
                     <textarea class='input' name="input" maxlength='400' placeholder="Masukkan teks di sini" wrap='hard'></textarea>
-                    <button type="submit"><span>></span></button>
+                    <button type="submit" class="send_button"><span>></span></button>
                 </form>
             </div>
         </div>
         <!-- RESPONSE -->
         <div class="response">
-        <div>
+        </div>
+
+        <div class="suggestion-wrapper">
+            <div class="suggestion" popover>
+                <strong>word suggestion:</strong>
+                <div class="suggestion_list">
+                </div>
+
+                <!-- USER NEW INPUT SUGGESTION (deferred)
+
+                <form>
+                    <input placeholder="Perbaikan lain">
+                    <button type="submit" class="submit">></button>
+                </form>
+
+                -->
+
+            </div>
+        </div>
 
     </main>
 
@@ -46,18 +64,37 @@
     const response_block = document.querySelector('.response');
     const input_form = document.querySelector('.input_form');
     
-
-    // to send message when user presses enter
-    {% comment %} user_input.addEventListener("keypress", function(event) {
-        // If the user presses the "Enter" key on the keyboard
-        if (event.key === "Enter") {
-          // Cancel the default action, if needed
-          event.preventDefault();
-          // Trigger the button element with a click
-          document.querySelector(".button").click();
+    // GLOBAL FUNCTIONS
+    function wrapMatchedWords(text, words) {
+        for (let raw_word of words) {
+            const word = raw_word.original;
+            const regex = new RegExp(`\\b${word}\\b`, 'gi'); // Use word boundary and case-insensitive matching
+            text = text.replace(regex, (match) => `<button class="wrong" popovertarget="${match}">${match}</button>`);
         }
-      }); {% endcomment %}
+        return text;
+    }
 
+    function setSuggestionPosition(event, suggestion) {
+        const rect = event.target.getBoundingClientRect();
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollLeft = document.documentElement.scrollLeft;
+        const suggestionHeight = suggestion.offsetHeight;
+    
+        const top = rect.top + scrollTop + suggestionHeight + 10; // Positioning above the word with a small margin
+        const left = rect.left + scrollLeft;
+    
+        suggestion.style.setProperty('top', `${top}px`);
+        suggestion.style.setProperty('left', `${left}px`);
+    }
+
+    function getCorrections(originalWord, error_words) {
+        for (let wordObj of error_words) {
+            if (wordObj.original === originalWord) {
+                return wordObj.correction;
+            }
+        }
+        return null; // Return null if no matching original word is found
+    }
 
     // SOME EPIC SHITs GOING ON HERE (send user_input and show response in the page)
     input_form.addEventListener('submit', (event) => {
@@ -75,6 +112,11 @@
         loader.classList.add("loader");
         response_block.appendChild(loader);
 
+        // disabling button temporarily
+        const send_button = document.querySelector(".send_button");
+        send_button.textContent = '--';
+        send_button.disabled = true;
+
         // RECEIVING DYNAMIC DATA FROM DJANGO
         fetch('', {
             method: 'POST',
@@ -88,8 +130,10 @@
           .then(data => {
             // accepting and assigning responses
             const typo_words = data.typo_words;
+            const error_words = data.error_words;
             const paraphrase = data.paraphrase;
             const typoParagraph = document.createElement('p');
+            typoParagraph.classList.add('wrong_text');
             const paraphraseParagraph = document.createElement('p');
             typoParagraph.innerHTML = typo_words;
             paraphraseParagraph.innerHTML = paraphrase;
@@ -102,6 +146,9 @@
             typoSubheading.textContent = `Typo`;
             paraphraseSubheading.textContent = `Parafrase`;
 
+            // labelling error_words
+            typoParagraph.innerHTML = wrapMatchedWords(typoParagraph.textContent, error_words);
+
             // remove LOADING
             loader.classList.remove("loader");
             // append subheadings and responses
@@ -109,6 +156,36 @@
             response_block.appendChild(typoParagraph);
             response_block.appendChild(paraphraseSubheading);
             response_block.appendChild(paraphraseParagraph);
+
+            // showing correction word suggestions
+            const suggestion = document.querySelector('.suggestion');
+            const suggestion_list = document.querySelector('.suggestion_list');
+
+            function showSuggestions(element, suggestions) {
+                suggestion_list.innerHTML = '';
+                suggestions.forEach(suggestion => {
+                    const button = document.createElement('button');
+                    button.textContent = suggestion;
+                    suggestion_list.appendChild(button);
+                });
+            }
+
+            typoParagraph.addEventListener('click', event => {
+                suggestion_list.innerHTML = '';
+            
+                const popover_target = event.target.getAttribute('popovertarget');
+                suggestion.setAttribute('id', popover_target)
+            
+                if (event.target.classList.contains('wrong')) {
+                    const word = popover_target.toLowerCase();
+                    showSuggestions(event.target, getCorrections(word, error_words));
+                    setSuggestionPosition(event, suggestion);
+                }
+            });
+
+            // re-enable button
+            send_button.textContent = '>';
+            send_button.disabled = false;
           });
 
     });
