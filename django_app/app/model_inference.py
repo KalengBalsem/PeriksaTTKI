@@ -5,7 +5,7 @@ def call_model(user_input):
         'user_input': user_input
     }
     try:
-        unparsed_response = requests.post("http://127.0.0.1:5000/run_model", json=request_body)
+        unparsed_response = requests.post("https://periksattki-model-lq6yigvk4q-uc.a.run.app/run_model", json=request_body)
         parsed_response = unparsed_response.json()
         typo_words = parsed_response['typo_words']
         error_words = parsed_response['error_words']
