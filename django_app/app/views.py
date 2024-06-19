@@ -8,7 +8,7 @@ from .models import Chat, UserCorrection
 
 from django.utils import timezone
 import json
-# inferencing the model
+# inferencing language model api
 from .model_inference import call_model
 ####
 

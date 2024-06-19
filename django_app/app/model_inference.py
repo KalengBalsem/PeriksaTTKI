@@ -1,12 +1,5 @@
 import requests
 
-# # GEMINI MODEL DEPENDENCIES
-# import textwrap
-# import google.generativeai as genai
-# from IPython.display import display
-# from IPython.display import Markdown
-# ####
-
 def call_model(user_input):
     request_body = {
         'user_input': user_input
