@@ -155,6 +155,15 @@ button.correct {
     background-color: lightgreen;
 }
 
+.button.copy {
+    margin: 10px 10%;
+}
+
+.button.copy.hidden {
+    visibility: hidden;
+}
+
+
 /* correction suggestions */
 div.suggestion {
     width: 150px;

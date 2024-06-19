@@ -1,6 +1,7 @@
 const user_input = document.querySelector('.input');
 const response_block = document.querySelector('.response');
 const input_form = document.querySelector('.input_form');
+const button_copy = document.querySelector('.button.copy');
 let responseInProgress = false;
 
 // GLOBAL FUNCTIONS
@@ -34,6 +35,19 @@ function getCorrections(originalWord, error_words) {
     }
     return null; // Return null if no matching original word is found
 }
+
+function copyParaphrase(htmlElement) {
+    if (!htmlElement) {
+        return;
+    }
+    let elementText = htmlElement.innerText;
+    let inputElement = document.createElement('input');
+    inputElement.setAttribute('value', elementText);
+    document.body.appendChild(inputElement);
+    inputElement.select();
+    document.execCommand('copy');
+    document.body.removeChild(inputElement);
+} 
 
 // SOME EPIC SHITs GOING ON HERE (send user_input and show response in the page)
 input_form.addEventListener('submit', (event) => {
@@ -73,6 +87,9 @@ async function send_user_input() {
     // disabling press enter key
     responseInProgress = true;
 
+    // hiding copy button
+    button_copy.classList.add('hidden');
+
     // RECEIVING DYNAMIC DATA FROM DJANGO
     fetch('', {
         method: 'POST',
@@ -92,6 +109,7 @@ async function send_user_input() {
         const typoParagraph = document.createElement('p');
         typoParagraph.classList.add('wrong_text');
         const paraphraseParagraph = document.createElement('p');
+        paraphraseParagraph.classList.add('paraphrase');
         typoParagraph.innerHTML = typo_words;
         paraphraseParagraph.innerHTML = paraphrase;
 
@@ -146,6 +164,18 @@ async function send_user_input() {
 
         // re-enable press enter key
         responseInProgress = false;
+
+        // show copy button
+        button_copy.classList.remove('hidden');
+        button_copy.addEventListener('click', event => {
+            copyParaphrase(document.querySelector('.paraphrase'));
+            button_copy.textContent = 'Tersalin!'
+            button_copy.disabled = true;
+            setTimeout(() => {
+                button_copy.textContent = 'Salin';
+                button_copy.disabled = false;
+            }, 2000);
+        })
       });
 }
 
