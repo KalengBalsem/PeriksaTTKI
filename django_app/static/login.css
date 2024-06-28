@@ -21,7 +21,7 @@ body {
     border-radius: 10px;
     
     /* make it in the center */
-    position: absolute;
+    position: absolute; 
     top:45%;
     left: 50%;
     transform: translate(-50% , -50%)
@@ -58,4 +58,9 @@ button {
 .alert {
     color: red;
     font-size: smaller;
+}
+
+.g_id_signin {
+    margin-top: 20px;
+    width: 180px;
 }
