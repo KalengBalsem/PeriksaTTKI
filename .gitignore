@@ -1,3 +1,2 @@
 .venv/
-django_app/app/__pycache__
-django_app/django_app/__pycache__
+django_app/app/_pycache_
