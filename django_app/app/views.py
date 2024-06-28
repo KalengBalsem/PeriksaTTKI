@@ -12,6 +12,10 @@ from django.views.decorators.csrf import csrf_exempt
 from google.oauth2 import id_token
 from google.auth.transport import requests
 import os
+
+# WARNING THIS IS HARDCODED!
+from dotenv import load_dotenv
+load_dotenv('/home/kalengbalsem/PeriksaTTKI/django_app/django_app/.env')
 ####
 
 # inferencing language model api
@@ -111,7 +115,24 @@ def auth_receiver(request):
     # You could also authenticate the user here using the details from Google (https://docs.djangoproject.com/en/4.2/topics/auth/default/#how-to-log-a-user-in)
     request.session['user_data'] = user_data
 
-    return redirect('index')
+    # Extract user information from the token
+    google_id = user_data.get('sub')
+    email = user_data.get('email')
+    first_name = user_data.get('given_name')
+    last_name = user_data.get('family_name')
+
+    # Check if the user already exists
+    try:
+        user = User.objects.get(email=email)
+    except User.DoesNotExist:
+        # If user does not exist, create a new user
+        user = User.objects.create_user(username=email, email=email, password=None)
+        user.save()
+
+
+    auth.login(request, user)
+    return redirect('main')
+
 
 def logout(request):
     auth.logout(request)
